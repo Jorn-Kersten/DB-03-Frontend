@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import {FormControl, Validators} from "@angular/forms";
 
 @Component({
   selector: 'app-root',
@@ -7,5 +6,5 @@ import {FormControl, Validators} from "@angular/forms";
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'ajcompare-frontend';
+  title = 'test';
 }
