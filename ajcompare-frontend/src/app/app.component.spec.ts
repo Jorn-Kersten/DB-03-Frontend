@@ -45,6 +45,6 @@ describe('AppComponent', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('.title h1')?.textContent).withContext('AJcompare Home');
+    expect(compiled.querySelector('.title h1')?.textContent).withContext('enne AJcompare Home');
   });
 });
