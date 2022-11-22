@@ -1,12 +1,31 @@
 import { TestBed } from '@angular/core/testing';
 import { AppComponent } from './app.component';
+import {HttpClientTestingModule} from "@angular/common/http/testing";
+import {RouterTestingModule} from "@angular/router/testing";
+import {IndexComponent} from "./index/index.component";
+import {NavbarComponent} from "./navbar/navbar.component";
+import {ShoppinglistComponent} from "./shoppinglist/shoppinglist.component";
+import {AppModule} from "./app.module";
 
 describe('AppComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [
-        AppComponent
+      imports: [
+        RouterTestingModule,
+        HttpClientTestingModule,
+        AppModule
       ],
+      declarations: [
+        AppComponent,
+        IndexComponent,
+        NavbarComponent,
+        ShoppinglistComponent,
+      ],
+      providers: [
+        IndexComponent,
+        NavbarComponent,
+        ShoppinglistComponent
+      ]
     }).compileComponents();
   });
 
@@ -26,6 +45,6 @@ describe('AppComponent', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('.content span')?.textContent).toContain('ajcompare-frontend app is running!');
+    expect(compiled.querySelector('.title h1')?.textContent).withContext('AJcompare Home');
   });
 });

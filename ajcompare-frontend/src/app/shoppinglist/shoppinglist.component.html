@@ -1,0 +1,83 @@
+<div class="container">
+  <div class="row top-row">
+    <div class="col-md-1">
+      <p class="breadcrumb"><a href="index">home</a>><a>shoppinglist</a></p>
+    </div>
+    <div class="col-md-auto">
+      <h1 class="breadcrumb title">AJcompare Home</h1>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-2">
+      <h2>Product</h2>
+    </div>
+    <div class="col-md-2">
+      <h2>Supermarket</h2>
+    </div>
+    <div class="col-md-2">
+      <h2>Price</h2>
+    </div>
+    <div class="col-md-1">
+      <h2>Content</h2>
+    </div>
+    <div class="col-md-2">
+      <h2>Cheapest at</h2>
+    </div>
+    <div class="col-md-2">
+      <h2>Add to shopping list</h2>
+    </div>
+  </div>
+
+  <form [formGroup]="formGroups">
+    <div class="row" [formArrayName]="'forms'">
+      <div class="col-md">
+        <div *ngIf="shoppingListProducts">
+          <div class="row productContainer" *ngFor="let product of shoppingListProducts; let i = index">
+            <div class="col-md-2 contentText">
+              <p>{{product.name}}</p>
+            </div>
+            <div class="col-md-2 contentText">
+              <p>{{product.superMarket}}</p>
+            </div>
+            <div class="col-md-2 contentForm d-grid">
+              <span class="d-grid">€{{product.price}}</span>
+              <span class="d-grid">Per 1l: {{product.price}}</span>
+            </div>
+            <div class="col-md-1 contentText">
+              <p>{{product.content}}ml</p>
+            </div>
+            <div class="col-md-2 contentForm d-grid">
+              <span class="d-grid">{{product.superMarket}}</span>
+              <button class="btn btn-primary btnCustomSize swapSupermarketBtn d-grid">Swap supermarket</button>
+            </div>
+
+            <div class="col-md-2 contentForm">
+                <div class="d-block">
+                  <div [formGroupName]="i">
+                    <div class="d-inline-block col-md-6 contentFields">
+                      <label class="d-inline contentLabel">Qnt</label>
+                      <input
+                        type="hidden"
+                        formControlName="productId"
+                        id="{{product.id}}"
+                        value="{{product.id}}">
+                      <input
+                        class="d-inline contentInput"
+                        type="number"
+                        id="{{product.quantity}}"
+                        formControlName="quantity"
+                        value="{{product.quantity}}">
+                    </div>
+                    <div class="d-inline-block col-md-6 contentButtons">
+                      <button class="btn btn-success btn-height d-block" (click)="onUpdate()">Change</button>
+                      <a routerLink="/shoppinglist"><button (click)="deleteShoppingListProduct(product.id)" class="btn btn-danger btn-height d-block">Remove</button></a>
+                    </div>
+                  </div>
+                </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

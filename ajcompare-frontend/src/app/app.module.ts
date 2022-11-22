@@ -15,12 +15,23 @@ import { NavbarComponent } from './navbar/navbar.component';
 import {MatTableModule} from "@angular/material/table";
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import {MatIconModule} from "@angular/material/icon";
+import { ShoppinglistComponent } from './shoppinglist/shoppinglist.component';
+import { RouterModule, Routes} from "@angular/router";
+
+const routes: Routes = [
+  {path: 'index', component: IndexComponent},
+  {path: '', redirectTo: '/index', pathMatch: 'full'},
+  {path: 'shoppinglist', component: ShoppinglistComponent},
+]
+
+
 
 @NgModule({
   declarations: [
     AppComponent,
     IndexComponent,
-    NavbarComponent
+    NavbarComponent,
+    ShoppinglistComponent
   ],
     imports: [
         BrowserModule,
@@ -36,6 +47,9 @@ import {MatIconModule} from "@angular/material/icon";
         MatTableModule,
         NgbModule,
         MatIconModule,
+        RouterModule.forRoot(
+          routes
+        ),
     ],
   providers: [],
   bootstrap: [AppComponent]
