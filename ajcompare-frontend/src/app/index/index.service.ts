@@ -2,14 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, retry } from 'rxjs/operators';
-
-export interface Product {
-  id: number;
-  name: string;
-  url: string;
-  date: any;
-  price: any;
-}
+import {Product} from "./Product";
 
 @Injectable()
 export class ConfigService {

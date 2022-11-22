@@ -1,6 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
-import { ConfigService, Product } from "./index.service";
+import { ConfigService } from "./index.service";
 import {FormControl, Validators} from "@angular/forms";
+import {Product} from "./Product";
 
 @Component({
   selector: 'app-index',
