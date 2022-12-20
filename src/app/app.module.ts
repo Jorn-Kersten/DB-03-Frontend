@@ -53,7 +53,7 @@ function initializeKeycloak(keycloak: KeycloakService) {
         return !(isGetRequest && acceptablePaths);
       }
     }).then(success => console.log(`keycloak service is available.`)
-    ).catch(ex => alert(`The keycloak service is temporarily unavailable. Please come back later. \nError: ${ex.error_description}`));
+    ).catch(ex => console.log(`The keycloak service is temporarily unavailable. Please come back later. \nError: ${ex.error_description}`));
 }
 
 @NgModule({
