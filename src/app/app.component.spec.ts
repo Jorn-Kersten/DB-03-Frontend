@@ -35,16 +35,16 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   });
 
-  it(`should have as title 'ajcompare-frontend'`, () => {
+  it(`title should be 'AJcompare'`, () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
-    expect(app.title).toEqual('ajcompare-frontend');
+    expect(app.title).toEqual('AJcompare');
   });
 
-  it('should render title', () => {
+  it('should render navbar', () => {
     const fixture = TestBed.createComponent(AppComponent);
-    fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('.title h1')?.textContent).withContext('enne AJcompare Home');
+    fixture.detectChanges();
+    expect(compiled.querySelector('a')?.textContent).toEqual('AJcompare');
   });
 });

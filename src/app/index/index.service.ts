@@ -5,22 +5,22 @@ import { catchError, retry } from 'rxjs/operators';
 import {Product} from "./Product";
 
 @Injectable()
-export class ConfigService {
+export class IndexService {
 
   constructor(private http: HttpClient) { }
 
   getAllProducts():Observable<Product[]> {
-    const url = 'http://localhost:8080/api/products';
+    const url = '/api/products';
     return this.http.get<Product[]>(url);
   }
 
   getProductById(productId: number):Observable<Product> {
-    const url = 'http://localhost:8080/api/products/'+ productId +'';
+    const url = '/api/products/'+ productId +'';
     return this.http.get<Product>(url);
   }
 
   getProductsByUser(userId: number):Observable<Product[]> {
-    const url = 'http://localhost:8080/api/products';
+    const url = '/api/products';
     return this.http.get<Product[]>(url);
   }
 }

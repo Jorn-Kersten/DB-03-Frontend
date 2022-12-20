@@ -12,7 +12,10 @@
         <!-- Search form -->
         <div class="d-flex input-group w-auto">
           <a routerLink="/shoppinglist" class="link-dark"><mat-icon aria-hidden="false" aria-label="Example home icon"class="icon" fontIcon="list"></mat-icon></a>
-          <a href="#" class="link-dark"><mat-icon aria-hidden="false" aria-label="Example home icon"class="icon" fontIcon="person"></mat-icon></a>
+          <a *ngIf="!loggedIn" (click)="login()" class="link-dark">Login</a>
+          <a *ngIf="!loggedIn" (click)="register()" class="link-dark">Register</a>
+          <a *ngIf="loggedIn" routerLink="/account" class="link-dark"><mat-icon aria-hidden="false" aria-label="Example home icon"class="icon" fontIcon="person"></mat-icon></a>
+          <a *ngIf="loggedIn" (click)="logOut()" class="link-dark">Logout</a>
         </div>
       </div>
     <!-- Container wrapper -->

@@ -1,12 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import {ConfigService} from "./shoppinglist.service";
+import {ShoppingListService} from "./shoppinglist.service";
 import {ShoppingListProduct} from "./ShoppingListProduct";
 import {FormArray, FormBuilder, FormControl, FormGroup} from "@angular/forms";
+import {User} from "../user/User";
+import {UserService} from "../user/user.service";
+import {KeycloakService} from "keycloak-angular";
 
 @Component({
   selector: 'app-shoppinglist',
   templateUrl: './shoppinglist.component.html',
-  providers: [ConfigService],
+  providers: [ShoppingListService, UserService],
   styleUrls: ['./shoppinglist.component.css']
 })
 export class ShoppinglistComponent implements OnInit {
@@ -18,9 +21,15 @@ export class ShoppinglistComponent implements OnInit {
   shoppingListProduct: ShoppingListProduct | any;
   shoppingListProducts: ShoppingListProduct[] = [];
 
-  formGroups: FormGroup | any;
+  loggedIn: boolean = false;
+  email: string = "";
+  user: User | undefined;
 
-  constructor(private configService: ConfigService, private formBuilder: FormBuilder) {
+  formGroups: FormGroup = this.formBuilder.group({
+    forms: this.formBuilder.array([])
+  });
+
+  constructor(private shoppingListService: ShoppingListService, private formBuilder: FormBuilder, private userService: UserService, private keycloakService: KeycloakService) {
 
   }
 
@@ -31,33 +40,42 @@ export class ShoppinglistComponent implements OnInit {
     this.shoppingListProducts = [];
   }
 
-  getShoppingList(userId: number) {
-    if (!userId) {
-      this.configService.getShoppingList(userId).subscribe(
+  get forms() {
+    return this.formGroups.controls["forms"] as FormArray;
+  }
+
+  getShoppingList(userId: number | undefined) {
+    if (userId) {
+      this.shoppingListService.getShoppingList(userId).subscribe(
         shoppingListProducts => {
-          (this.shoppingListProducts = shoppingListProducts)
-          // console.log(shoppingListProducts)
+          if (shoppingListProducts) {
+            this.shoppingListProducts = shoppingListProducts
+            Object.keys(shoppingListProducts).forEach((i) => {
+              const tempFormGroup = this.formBuilder.group({
+                productId: new FormControl({value: shoppingListProducts[Number(i)].id, disabled: false}),
+                quantity: new FormControl({value: shoppingListProducts[Number(i)].quantity, disabled: false})
+              });
 
-          this.formGroups = this.formBuilder.group({
-            forms: this.formBuilder.array([])
-          });
-
-          const controlArray = this.formGroups.get("forms") as FormArray;
-
-          Object.keys(shoppingListProducts).forEach((i) => {
-            controlArray.push(
-              this.formBuilder.group({
-                productId: new FormControl({ value: shoppingListProducts[Number(i)].id, disabled: false }),
-                quantity: new FormControl({ value: shoppingListProducts[Number(i)].quantity, disabled: false })
-              })
-            )
-          })
+              this.forms.push(tempFormGroup);
+            });
+          }
         })
     }
   }
 
+  createFormGroups(){
+    Object.keys(this.shoppingListProducts).forEach((i) => {
+      const tempFormGroup = this.formBuilder.group({
+        productId: new FormControl({ value: this.shoppingListProducts[Number(i)].id, disabled: false }),
+        quantity: new FormControl({ value: this.shoppingListProducts[Number(i)].quantity, disabled: false })
+      })
+
+      this.forms.push(tempFormGroup)
+    })
+  }
+
   getShoppingListProductById(productId: number){
-    this.configService.getShoppingListProductById(productId).subscribe(
+    this.shoppingListService.getShoppingListProductById(productId).subscribe(
       product => {(this.shoppingListProduct = product)
         console.log(product)
       })
@@ -70,11 +88,11 @@ export class ShoppinglistComponent implements OnInit {
       }
     }
 
-    this.configService.updateShoppingListProduct(quantity, this.shoppingListProduct);
+    this.shoppingListService.updateShoppingListProduct(quantity, this.shoppingListProduct);
   }
 
   deleteShoppingListProduct(productId: number) {
-    this.configService.deleteShoppingListProduct(productId);
+    this.shoppingListService.deleteShoppingListProduct(productId);
   }
 
   onUpdate() {
@@ -82,13 +100,25 @@ export class ShoppinglistComponent implements OnInit {
       if (this.shoppingListProducts[i].quantity != this.formGroups.value.forms[i].quantity) {
         console.log(this.shoppingListProducts[i].quantity + " " + this.formGroups.value.forms[i].quantity)
         this.shoppingListProducts[i].quantity = this.formGroups.value.forms[i].quantity;
-        this.shoppingListProducts[i] = this.configService.updateShoppingListProduct(this.formGroups.value.forms[i].productId, this.shoppingListProducts[i]);
+        this.shoppingListProducts[i] = this.shoppingListService.updateShoppingListProduct(this.formGroups.value.forms[i].productId, this.shoppingListProducts[i]);
       }
     }
   }
 
-  ngOnInit(): void {
-    this.getShoppingList(0)
+  async ngOnInit(){
+    this.loggedIn = await this.keycloakService.isLoggedIn();
+
+    console.log("is user logged in: " + this.loggedIn);
+    if (this.loggedIn) {
+      this.userService.getUser(this.keycloakService.getUsername())?.subscribe(res => {
+        this.user = <User>res;
+
+        console.log("user is: " + this.user.name + " id: " +this.user.id);
+        if (this.user){
+          this.getShoppingList(this.user.id)
+        }
+      })
+    }
   }
 
 }

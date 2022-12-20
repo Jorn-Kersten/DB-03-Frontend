@@ -2,38 +2,42 @@ import {Injectable} from "@angular/core";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {ShoppingListProduct} from "./ShoppingListProduct";
-import {catchError} from "rxjs/operators";
+import {KeycloakService} from "keycloak-angular";
+import {API_HEADERS} from "../url.constants";
 
 @Injectable()
-export class ConfigService {
+export class ShoppingListService {
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private keycloakService: KeycloakService) {
+    this.setHeaders().then(r => console.log(r));
+  }
+
+  async setHeaders() {
+    if (await this.keycloakService.getToken() != undefined) {
+      API_HEADERS.headers = API_HEADERS.headers.set('Authorization', 'Bearer ' + await this.keycloakService.getToken());
+      return "Success";
+    }
+    return "Logged out";
+  }
 
   getShoppingList(userId: number):Observable<ShoppingListProduct[]> {
-    const url = 'http://localhost:8080/api/shoppingList/products/user/'+userId+'';
-    return this.http.get<ShoppingListProduct[]>(url);
+    const url = '/api/user/shoppingList/products/'+userId+'';
+    return this.http.get<ShoppingListProduct[]>(url, API_HEADERS);
   }
 
   getShoppingListProductById(productId: number):Observable<ShoppingListProduct> {
-    const url = 'http://localhost:8080/api/shoppingList/products/'+ productId +'';
-    return this.http.get<ShoppingListProduct>(url);
+    const url = '/api/user/shoppingList/products/'+ productId +'';
+    return this.http.get<ShoppingListProduct>(url, API_HEADERS);
   }
 
   updateShoppingListProduct(productId: number, shoppingListProduct: ShoppingListProduct): ShoppingListProduct {
     console.log(productId, shoppingListProduct)
 
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type':  'application/json',
-        Authorization: 'my-auth-token'
-      })
-    };
-
     if (shoppingListProduct)
     {
       console.log("test")
-      const url = 'http://localhost:8080/api/shoppingList/products/'+ productId +'';
-      this.http.put<ShoppingListProduct>(url, shoppingListProduct, httpOptions)
+      const url = '/api/user/shoppingList/products/'+ productId +'';
+      this.http.put<ShoppingListProduct>(url, shoppingListProduct, API_HEADERS)
         .subscribe({
           next: data => {
             shoppingListProduct = data;
@@ -52,13 +56,13 @@ export class ConfigService {
   }
 
   addShoppingListProduct(userId: number, shoppingListProduct: ShoppingListProduct): Observable<ShoppingListProduct> {
-    const url = 'http://localhost:8080/api/shoppingList/products/user/'+ userId +'';
-    return this.http.put<ShoppingListProduct>(url, shoppingListProduct);
+    const url = '/api/user/shoppingList/products/'+ userId +'';
+    return this.http.put<ShoppingListProduct>(url, shoppingListProduct, API_HEADERS);
   }
 
   deleteShoppingListProduct(shoppingListProductId: number): number {
     console.log(shoppingListProductId)
-    const url = 'http://localhost:8080/api/shoppingList/products/'+ shoppingListProductId +'';
+    const url = '/api/user/shoppingList/products/'+ shoppingListProductId +'';
     let succes = 200;
     this.http.delete(url)
       .subscribe({

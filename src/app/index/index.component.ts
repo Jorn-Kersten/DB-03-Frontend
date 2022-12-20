@@ -1,24 +1,23 @@
 import {Component, Input, OnInit} from '@angular/core';
-import { ConfigService } from "./index.service";
+import {IndexService} from "./index.service";
 import {FormControl, Validators} from "@angular/forms";
 import {Product} from "./Product";
+import {UserService} from "../user/user.service";
+import {KeycloakService} from "keycloak-angular";
+import {User} from "../user/User";
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Component({
   selector: 'app-index',
   templateUrl: './index.component.html',
-  providers: [ ConfigService ],
+  providers: [ IndexService, UserService ],
   styleUrls: ['./index.component.css']
 })
 export class IndexComponent implements OnInit {
-  // number = new FormControl('', [Validators.required, Validators.pattern("^[0-9]*$")]);
-  //
-  // getErrorMessage() {
-  //   if (this.number.hasError('required')) {
-  //     return 'You must enter a value';
-  //   }
-  //
-  //   return this.number.hasError('pattern') ? 'Not a valid number' : '';
-  // }
+  hide: boolean = true;
+  loggedIn: boolean = false;
+  name: string = "";
+  checkUsername: User | undefined;
 
   productId: any | undefined;
 
@@ -28,7 +27,7 @@ export class IndexComponent implements OnInit {
   product: Product | undefined;
   products: Product[] = [];
 
-  constructor(private configService: ConfigService) { }
+  constructor(private indexService: IndexService, private userService: UserService, private keycloakService: KeycloakService,  private _snackBar: MatSnackBar) { }
 
   clear() {
     this.product = undefined;
@@ -37,11 +36,48 @@ export class IndexComponent implements OnInit {
     this.products = [];
   }
 
-  getAllProducts() {
-    this.configService.getAllProducts().subscribe(
-      products => {(this.products = products)
-        console.log(products)
-    })
+  async ngOnInit() {
+    this.getAllProducts()
+    this.loggedIn = await this.keycloakService.isLoggedIn();
+
+    if (this.loggedIn) {
+      this.checkUser();
+    }
+  }
+
+  checkUser() {
+    this.keycloakService.loadUserProfile().then(profile => {
+      this.userService.getUser(profile.username)?.subscribe(res => {
+        this.checkUsername = <User>res;
+
+        if (profile.username == this.checkUsername?.name) {
+          console.log('already in database');
+        } else {
+          this.userService.addToDatabase(profile.username, profile.email);
+        }
+      }, error => {
+        console.log("ERROR: ", error.statusText);
+
+        if (profile.username == this.checkUsername?.name) {
+          console.log('already in database');
+        } else {
+          console.log(profile.username, profile.email)
+          this.userService.addToDatabase(profile.username, profile.email);
+        }
+      });
+    });
+  }
+
+  async getAllProducts() {
+    (await this.indexService.getAllProducts()).subscribe(
+      products => (this.products = products),
+      error => {
+        this._snackBar.open("The backend service is not available: " + error.statusText, 'OK', {
+          duration: 5000,
+          panelClass: ['errorSnackbar']
+        });
+      }
+    );
     // if(!userId){
     //   this.configService.getAllProducts().subscribe(
     //     products => {(this.products = products)
@@ -57,13 +93,9 @@ export class IndexComponent implements OnInit {
   }
 
   getProductById(productId: number){
-    this.configService.getProductById(productId).subscribe(
+    this.indexService.getProductById(productId).subscribe(
       product => {(this.product = product)
         console.log(product)
       })
-  }
-
-  ngOnInit(): void {
-    this.getAllProducts()
   }
 }

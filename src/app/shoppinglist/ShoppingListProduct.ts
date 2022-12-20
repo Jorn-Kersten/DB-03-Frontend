@@ -3,7 +3,7 @@ export interface ShoppingListProduct {
   shoppingListId: number;
   userId: number;
   quantity: number;
-  content: number;
+  content: any;
   name: string;
   superMarket: string;
   url: string;

@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import {APP_INITIALIZER, NgModule} from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
 
@@ -17,24 +17,56 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import {MatIconModule} from "@angular/material/icon";
 import { ShoppinglistComponent } from './shoppinglist/shoppinglist.component';
 import { RouterModule, Routes} from "@angular/router";
+import {KeycloakAngularModule, KeycloakService} from "keycloak-angular";
+import {environment} from "../environments/environment";
+import { UserComponent } from './user/user.component';
+import {MatSnackBarModule} from "@angular/material/snack-bar";
 
 const routes: Routes = [
   {path: 'index', component: IndexComponent},
   {path: '', redirectTo: '/index', pathMatch: 'full'},
   {path: 'shoppinglist', component: ShoppinglistComponent},
+  {path: 'account', component: UserComponent}
 ]
 
+function initializeKeycloak(keycloak: KeycloakService) {
+  return () =>
+    keycloak.init({
+      config: {
+        url: environment.keycloak.url,
+        realm: environment.keycloak.realm,
+        clientId: environment.keycloak.clientId
+      },
+      initOptions: {
+        onLoad: 'check-sso',
+        silentCheckSsoRedirectUri: window.location.origin + '/assets/silent-check-sso.html',
+        pkceMethod: 'S256',
+        redirectUri: environment.keycloak.redirectUri,
+        checkLoginIframe: false
+      },
+      shouldAddToken: (request) => {
+        const { method } = request;
 
+        const isGetRequest = 'GET' === method.toUpperCase();
+        const acceptablePaths = ['/assets', '/api/*'];
+
+        return !(isGetRequest && acceptablePaths);
+      }
+    }).then(success => console.log(`keycloak service is available.`)
+    ).catch(ex => alert(`The keycloak service is temporarily unavailable. Please come back later. \nError: ${ex.error_description}`));
+}
 
 @NgModule({
   declarations: [
     AppComponent,
     IndexComponent,
     NavbarComponent,
-    ShoppinglistComponent
+    ShoppinglistComponent,
+    UserComponent
   ],
     imports: [
         BrowserModule,
+        KeycloakAngularModule,
         HttpClientModule,
         BrowserAnimationsModule,
         MatGridListModule,
@@ -50,8 +82,16 @@ const routes: Routes = [
         RouterModule.forRoot(
           routes
         ),
+        MatSnackBarModule,
     ],
-  providers: [],
+  providers: [
+      {
+        provide: APP_INITIALIZER,
+        useFactory: initializeKeycloak,
+        multi: true,
+        deps: [KeycloakService]
+      }
+    ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
