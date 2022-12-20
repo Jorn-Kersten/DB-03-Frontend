@@ -1,0 +1,23 @@
+<header>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <!-- Container wrapper -->
+    <div class="container-fluid">
+      <!-- Navbar brand -->
+      <a class="navbar-brand" routerLink="/index">AJcompare</a>
+        <!-- Left links -->
+        <div class="navbar-nav me-auto mb-2 mb-lg-0">
+        </div>
+        <!-- Left links -->
+
+        <!-- Search form -->
+        <div class="d-flex input-group w-auto">
+          <a routerLink="/shoppinglist" class="link-dark"><mat-icon aria-hidden="false" aria-label="Example home icon"class="icon" fontIcon="list"></mat-icon></a>
+          <a *ngIf="!loggedIn" (click)="login()" class="link-dark">Login</a>
+          <a *ngIf="!loggedIn" (click)="register()" class="link-dark">Register</a>
+          <a *ngIf="loggedIn" routerLink="/account" class="link-dark"><mat-icon aria-hidden="false" aria-label="Example home icon"class="icon" fontIcon="person"></mat-icon></a>
+          <a *ngIf="loggedIn" (click)="logOut()" class="link-dark">Logout</a>
+        </div>
+      </div>
+    <!-- Container wrapper -->
+  </nav>
+</header>
