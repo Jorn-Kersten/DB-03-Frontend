@@ -9,6 +9,7 @@ import {AppModule} from "../app.module";
 import {ShoppingListProduct} from "./ShoppingListProduct";
 import {FormGroup} from "@angular/forms";
 import {By} from "@angular/platform-browser";
+import {UserComponent} from "../user/user.component";
 
 describe('ShoppinglistComponent', () => {
   beforeEach(async () => {
@@ -24,11 +25,13 @@ describe('ShoppinglistComponent', () => {
         IndexComponent,
         NavbarComponent,
         ShoppinglistComponent,
+        UserComponent
       ],
       providers: [
         IndexComponent,
         NavbarComponent,
-        ShoppinglistComponent
+        ShoppinglistComponent,
+        UserComponent
       ]
     }).compileComponents();
   });
@@ -37,6 +40,7 @@ describe('ShoppinglistComponent', () => {
     const fixture = TestBed.createComponent(ShoppinglistComponent);
     const app = fixture.componentInstance;
     expect(app).toBeTruthy();
+    console.log("Should render the app (shoppinglist component)");
   });
 
   // it('should render 2 components', () => {
