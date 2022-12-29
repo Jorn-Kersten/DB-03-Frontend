@@ -24,3 +24,5 @@ jobs:
         run: npm test
       - name: Run ng build
         run: npm run build
+      - name: Execute load tests
+        run: /home/node/artillery/bin/artillery run loadTests/Loadtest-index.yml
