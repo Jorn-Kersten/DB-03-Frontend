@@ -10,7 +10,7 @@ import {ShoppingList} from "./ShoppingList";
 export class ShoppingListService {
 
   constructor(private http: HttpClient, private keycloakService: KeycloakService) {
-    this.setHeaders().then(r => console.log(r));
+    this.setHeaders();
   }
 
   async setHeaders() {
@@ -18,6 +18,7 @@ export class ShoppingListService {
       API_HEADERS.headers = API_HEADERS.headers.set('Authorization', 'Bearer ' + await this.keycloakService.getToken());
       return "Success";
     }
+    return "Logged out";
   }
 
   getShoppingList(userName: string):Observable<ShoppingListProduct[]> {

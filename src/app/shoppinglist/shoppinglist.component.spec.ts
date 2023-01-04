@@ -45,6 +45,5 @@ describe('ShoppinglistComponent', () => {
     const app = fixture.componentInstance;
 
     expect(app.shoppingListProducts).toBeDefined();
-    console.log("correct")
   });
 });

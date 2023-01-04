@@ -8,7 +8,7 @@ import {KeycloakService} from "keycloak-angular";
 export class UserService {
 
   constructor(private http: HttpClient, private keycloakService: KeycloakService) {
-    this.setHeaders().then(r => console.log(r));
+    this.setHeaders();
   }
 
   async setHeaders() {
