@@ -6,6 +6,7 @@ import {IndexComponent} from "./index/index.component";
 import {NavbarComponent} from "./navbar/navbar.component";
 import {ShoppinglistComponent} from "./shoppinglist/shoppinglist.component";
 import {AppModule} from "./app.module";
+import {UserComponent} from "./user/user.component";
 
 describe('AppComponent', () => {
   beforeEach(async () => {
@@ -18,33 +19,26 @@ describe('AppComponent', () => {
       declarations: [
         AppComponent,
         IndexComponent,
-        NavbarComponent,
-        ShoppinglistComponent,
+        NavbarComponent
       ],
       providers: [
-        IndexComponent,
-        NavbarComponent,
-        ShoppinglistComponent
       ]
     }).compileComponents();
   });
 
-  // it('should create the app', () => {
-  //   const fixture = TestBed.createComponent(AppComponent);
-  //   const app = fixture.componentInstance;
-  //   expect(app).toBeTruthy();
-  // });
+  it('should create the app', () => {
+    const fixture = TestBed.createComponent(AppComponent);
+
+    const app = fixture.componentInstance;
+
+    expect(app).toBeTruthy();
+  });
 
   it(`title should be 'AJcompare'`, () => {
     const fixture = TestBed.createComponent(AppComponent);
+
     const app = fixture.componentInstance;
+
     expect(app.title).toEqual('AJcompare');
   });
-
-  // it('should render navbar', () => {
-  //   const fixture = TestBed.createComponent(AppComponent);
-  //   const compiled = fixture.nativeElement as HTMLElement;
-  //   fixture.detectChanges();
-  //   expect(compiled.querySelector('a')?.textContent).toEqual('AJcompare');
-  // });
 });

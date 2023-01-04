@@ -29,7 +29,6 @@
   </div>
 
   <div *ngIf="shoppingListProducts.length > 0">
-    <p>{{shoppingListProducts.length}}</p>
     <form [formGroup]="formGroups">
       <div class="row" [formArrayName]="'forms'">
         <div class="col-md">
@@ -46,7 +45,7 @@
                 <span class="d-grid">Per 1l: {{product.price}}</span>
               </div>
               <div class="col-md-1 contentText">
-                <p>{{product.content}}ml</p>
+                <p>{{product.content}} l</p>
               </div>
               <div class="col-md-2 contentForm d-grid">
                 <span class="d-grid">{{product.superMarket}}</span>
@@ -72,7 +71,7 @@
                       </div>
                       <div class="d-inline-block col-md-6 contentButtons">
                         <button class="btn btn-success btn-height d-block" (click)="onUpdate()">Change</button>
-                        <a routerLink="/shoppinglist"><button (click)="deleteShoppingListProduct(product.id)" class="btn btn-danger btn-height d-block">Remove</button></a>
+                        <button (click)="deleteShoppingListProduct(product.userName, product.id)" class="btn btn-danger btn-height d-block">Remove</button>
                       </div>
                     </div>
                   </div>

@@ -2,6 +2,13 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { UserComponent } from './user.component';
 import {ShoppinglistComponent} from "../shoppinglist/shoppinglist.component";
+import {RouterTestingModule} from "@angular/router/testing";
+import {HttpClientTestingModule} from "@angular/common/http/testing";
+import {AppModule} from "../app.module";
+import {UserService} from "./user.service";
+import {IndexComponent} from "../index/index.component";
+import {NavbarComponent} from "../navbar/navbar.component";
+import {AppComponent} from "../app.component";
 
 describe('UserComponent', () => {
   let component: UserComponent;
@@ -9,18 +16,26 @@ describe('UserComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ UserComponent ]
+      imports: [
+        RouterTestingModule,
+        HttpClientTestingModule,
+        AppModule,
+      ],
+      declarations: [
+        AppComponent,
+        UserComponent
+      ],
+      providers: [
+      ]
     })
     .compileComponents();
-
-    fixture = TestBed.createComponent(UserComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
-  // it('should create the app', () => {
-  //   const fixture = TestBed.createComponent(ShoppinglistComponent);
-  //   const app = fixture.componentInstance;
-  //   expect(app).toBeTruthy();
-  // });
+  it('should create the app', () => {
+    const fixture = TestBed.createComponent(UserComponent);
+
+    const app = fixture.componentInstance;
+
+    expect(app).toBeTruthy();
+  });
 });

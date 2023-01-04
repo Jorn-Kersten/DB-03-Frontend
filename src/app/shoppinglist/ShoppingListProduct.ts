@@ -1,7 +1,7 @@
 export interface ShoppingListProduct {
   id: number;
   shoppingListId: number;
-  userId: number;
+  userName: string;
   quantity: number;
   content: any;
   name: string;

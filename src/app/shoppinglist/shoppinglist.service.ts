@@ -4,12 +4,13 @@ import {Observable} from "rxjs";
 import {ShoppingListProduct} from "./ShoppingListProduct";
 import {KeycloakService} from "keycloak-angular";
 import {API_HEADERS} from "../url.constants";
+import {ShoppingList} from "./ShoppingList";
 
 @Injectable()
 export class ShoppingListService {
 
   constructor(private http: HttpClient, private keycloakService: KeycloakService) {
-    this.setHeaders().then(r => console.log(r));
+    this.setHeaders();
   }
 
   async setHeaders() {
@@ -20,60 +21,38 @@ export class ShoppingListService {
     return "Logged out";
   }
 
-  getShoppingList(userId: number):Observable<ShoppingListProduct[]> {
-    const url = '/api/user/shoppingList/products/'+userId+'';
+  getShoppingList(userName: string):Observable<ShoppingListProduct[]> {
+    const url = '/api/user/shoppingList/products/'+userName+'';
     return this.http.get<ShoppingListProduct[]>(url, API_HEADERS);
   }
 
-  getShoppingListProductById(productId: number):Observable<ShoppingListProduct> {
-    const url = '/api/user/shoppingList/products/'+ productId +'';
+  getShoppingListProductById(userName: string, productId: number):Observable<ShoppingListProduct> {
+    const url = '/api/user/shoppingList/products/'+ userName +'/'+ productId +'';
     return this.http.get<ShoppingListProduct>(url, API_HEADERS);
   }
 
-  updateShoppingListProduct(productId: number, shoppingListProduct: ShoppingListProduct): ShoppingListProduct {
-    console.log(productId, shoppingListProduct)
-
-    if (shoppingListProduct)
-    {
-      console.log("test")
-      const url = '/api/user/shoppingList/products/'+ productId +'';
-      this.http.put<ShoppingListProduct>(url, shoppingListProduct, API_HEADERS)
-        .subscribe({
-          next: data => {
-            shoppingListProduct = data;
-          },
-          error: error => {
-            console.error('There was an error!', error);
-          }
-        });
-
-      return shoppingListProduct;
-    }
-    else
-    {
-      return shoppingListProduct;
-    }
-  }
-
-  addShoppingListProduct(userId: number, shoppingListProduct: ShoppingListProduct): Observable<ShoppingListProduct> {
-    const url = '/api/user/shoppingList/products/'+ userId +'';
+  updateShoppingListProduct(userName: string | undefined, productId: number, shoppingListProduct: ShoppingListProduct):Observable<ShoppingListProduct> {
+    const url = '/api/user/shoppingList/products/'+ userName +'/'+ productId +'';
     return this.http.put<ShoppingListProduct>(url, shoppingListProduct, API_HEADERS);
   }
 
-  deleteShoppingListProduct(shoppingListProductId: number): number {
-    console.log(shoppingListProductId)
-    const url = '/api/user/shoppingList/products/'+ shoppingListProductId +'';
-    let succes = 200;
-    this.http.delete(url)
-      .subscribe({
-        next: data => {
-          succes = 200;
-        },
-        error: error => {
-          succes = error.errorCode
-          console.error('There was an error!', error);
-        }
-      });
-    return succes;
+  addShoppingListProduct(userName: string | undefined, shoppingListProduct: ShoppingListProduct): Observable<ShoppingListProduct> {
+    const url = '/api/user/shoppingList/products/'+ userName +'';
+    return this.http.post<ShoppingListProduct>(url, shoppingListProduct, API_HEADERS);
+  }
+
+  deleteShoppingListProduct(userName: string, shoppingListProductId: number):Observable<any>{
+    const url = '/api/user/shoppingList/products/'+ userName +'/'+ shoppingListProductId +'';
+    return this.http.delete(url)
+  }
+
+  getAllShoppingList(userName: string):Observable<ShoppingList[]> {
+    const url = '/api/user/shoppingLists/'+userName+'';
+    return this.http.get<ShoppingList[]>(url, API_HEADERS);
+  }
+
+  addShoppingList(userName: string, shoppingList: ShoppingList):Observable<ShoppingList> {
+    const url = 'api/user/shoppingLists/'+ userName +'';
+    return this.http.post<ShoppingList>(url, shoppingList, API_HEADERS);
   }
 }

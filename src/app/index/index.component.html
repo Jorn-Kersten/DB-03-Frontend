@@ -7,7 +7,7 @@
       <h1 class="breadcrumb title">AJcompare Home</h1>
     </div>
   </div>
-  <div class="row" style="margin-left: 20px; margin-right: 50px">
+  <div class="row" >
     <div class="col-md-2">
       <h2>Product</h2>
     </div>
@@ -30,90 +30,56 @@
 
   <div class="row">
     <div class="col-md">
-      <div>
-        <form (ngSubmit)="getProductById(productId)">
-          <!--  <mat-form-field appearance="fill">-->
-          <mat-label>Enter your userId</mat-label>
-          <input matInput placeholder="1" name="productId" [(ngModel)]="productId" required>
-          <!--    <mat-error *ngIf="number.invalid">{{getErrorMessage()}}</mat-error>-->
-          <button type="submit">Set userId</button>
-          <!--  </mat-form-field>-->
-        </form>
-
-        <div *ngIf="product">
-          singular product:
-          <mat-accordion>
-            <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
-              <mat-expansion-panel-header>
-                <mat-panel-title>
-                  id: {{product.id}}
-                </mat-panel-title>
-                <mat-panel-description>
-                  name: {{product.name}}
-                </mat-panel-description>
-                <mat-panel-description>
-                  url: {{product.url}}
-                </mat-panel-description>
-                <mat-panel-description>
-                  date {{product.date}}
-                </mat-panel-description>
-                <mat-panel-description>
-                  price: {{product.price}}
-                </mat-panel-description>
-                <mat-panel-description>
-                  price: {{product.price}}
-                </mat-panel-description>
-              </mat-expansion-panel-header>
-              <mat-list>
-                <mat-list-item><p>This is the primary content of the panel.</p></mat-list-item>
-                <mat-divider></mat-divider>
-                <mat-list-item><p>This is the primary content of the panel.</p></mat-list-item>
-              </mat-list>
-            </mat-expansion-panel>
-          </mat-accordion>
-        </div>
-
 
         <div *ngIf="products">
-          Products:
-          <mat-accordion multi>
-            <mat-expansion-panel *ngFor="let product of products" (opened)="panelOpenState = true" (closed)="panelOpenState = false">
-              <mat-expansion-panel-header>
-                <mat-panel-title style="width: auto;">
-                  id: {{product.id}}
-                </mat-panel-title>
-                <mat-panel-description>
-                  name: {{product.name}}
-                </mat-panel-description>
-                <mat-panel-description>
-                  url: {{product.url}}
-                </mat-panel-description>
-                <mat-panel-description>
-                  date {{product.date}}
-                </mat-panel-description>
-                <mat-panel-description>
-                  price: {{product.price}}
-                </mat-panel-description>
-                <mat-panel-description>
-                  <form (ngSubmit)="getProductById(productId)">
-                    <!--  <mat-form-field appearance="fill">-->
-                    <mat-label>Enter your userId</mat-label>
-                    <input matInput placeholder="1" name="productId{{product.id}}" [(ngModel)]="productId" required>
-                    <!--    <mat-error *ngIf="number.invalid">{{getErrorMessage()}}</mat-error>-->
-                    <button type="submit">Set userId</button>
-                    <!--  </mat-form-field>-->
-                  </form>
-                </mat-panel-description>
-              </mat-expansion-panel-header>
-              <mat-list>
-                <mat-list-item><p>This is the primary content of the panel.</p></mat-list-item>
-                <mat-divider></mat-divider>
-                <mat-list-item><p>This is the primary content of the panel.</p></mat-list-item>
-              </mat-list>
-            </mat-expansion-panel>
-          </mat-accordion>
+          <form [formGroup]="formGroups">
+            <div class="row" [formArrayName]="'forms'">
+              <div class="col-md">
+                  <div class="row productContainer" *ngFor="let product of products; let i = index">
+                    <div class="col-md-2 contentText">
+                      <p>name: {{product.name}}</p>
+                    </div>
+                    <div class="col-md-2 contentText">
+                      <p>supermarket: {{product.supermarket}}</p>
+                    </div>
+                    <div class="col-md-2 contentText">
+                      <p>price: {{product.price}}</p>
+                    </div>
+                    <div class="col-md-2 contentText">
+                      <p>{{product.content}} l</p>
+                    </div>
+                    <div class="col-md-2 contentText">
+                      <p>supermarket: {{product.supermarket}}</p>
+                    </div>
+                    <div class="col-md-2 contentForm">
+                      <div class="d-block">
+                        <div [formGroupName]="i">
+                          <div class="d-inline-block col-md-6 contentFields">
+                            <label class="d-inline contentLabel">Qnt</label>
+                            <input
+                              type="hidden"
+                              formControlName="productId"
+                              id="{{product.id}}"
+                              value="{{product.id}}">
+                            <input
+                              class="d-inline contentInput"
+                              type="number"
+                              id="0"
+                              formControlName="quantity"
+                              value="0">
+                          </div>
+                          <div class="d-inline-block col-md-6 contentButtons">
+                            <button class="btn btn-success contentButtons d-block" (click)="addToShoppingList(product.id)">Add</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+              </div>
+            </div>
+          </form>
         </div>
-      </div>
+
     </div>
   </div>
 </div>

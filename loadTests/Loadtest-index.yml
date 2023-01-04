@@ -1,0 +1,21 @@
+config:
+  target: "http://localhost:4200"
+  http:
+    timeout: 10
+    pool: 10
+    maxSockets: 5
+  ensure:
+    maxErrorRate: 1
+  phases:
+    - duration: 20
+      arrivalRate: 5
+      name: "Warming up"
+    - duration: 60
+      arrivalRate: 10
+      rampTo: 100
+      name: "Max load"
+
+scenarios:
+  - flow:
+      - get:
+          url: "/"

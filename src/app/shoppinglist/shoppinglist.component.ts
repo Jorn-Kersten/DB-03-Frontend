@@ -5,6 +5,7 @@ import {FormArray, FormBuilder, FormControl, FormGroup} from "@angular/forms";
 import {User} from "../user/User";
 import {UserService} from "../user/user.service";
 import {KeycloakService} from "keycloak-angular";
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Component({
   selector: 'app-shoppinglist',
@@ -29,7 +30,7 @@ export class ShoppinglistComponent implements OnInit {
     forms: this.formBuilder.array([])
   });
 
-  constructor(private shoppingListService: ShoppingListService, private formBuilder: FormBuilder, private userService: UserService, private keycloakService: KeycloakService) {
+  constructor(private shoppingListService: ShoppingListService, private formBuilder: FormBuilder, private userService: UserService, private keycloakService: KeycloakService,  private _snackBar: MatSnackBar) {
 
   }
 
@@ -44,9 +45,9 @@ export class ShoppinglistComponent implements OnInit {
     return this.formGroups.controls["forms"] as FormArray;
   }
 
-  getShoppingList(userId: number | undefined) {
-    if (userId) {
-      this.shoppingListService.getShoppingList(userId).subscribe(
+  async getShoppingList(userName: string | undefined) {
+    if (userName) {
+      await this.shoppingListService.getShoppingList(userName).subscribe(
         shoppingListProducts => {
           if (shoppingListProducts) {
             this.shoppingListProducts = shoppingListProducts
@@ -59,7 +60,15 @@ export class ShoppinglistComponent implements OnInit {
               this.forms.push(tempFormGroup);
             });
           }
-        })
+        },
+        error => {
+          this._snackBar.open("An error occurred while loading the page: " + error.statusText, 'OK', {
+              duration: 5000,
+              panelClass: ['errorSnackbar']
+            }
+          );
+        }
+      )
     }
   }
 
@@ -74,33 +83,86 @@ export class ShoppinglistComponent implements OnInit {
     })
   }
 
-  getShoppingListProductById(productId: number){
-    this.shoppingListService.getShoppingListProductById(productId).subscribe(
-      product => {(this.shoppingListProduct = product)
-        console.log(product)
-      })
+  getShoppingListProductById(userName: string, productId: number){
+    this.shoppingListService.getShoppingListProductById(userName, productId).subscribe(
+      product => {
+        this.shoppingListProduct = product
+      },
+      error => {
+        this._snackBar.open("An error occurred: " + error.statusText, 'OK', {
+            duration: 5000,
+            panelClass: ['errorSnackbar']
+          }
+        );
+      }
+    )
   }
 
-  updateQuantity(quantity: number, productId: number){
+  updateQuantity(userName: string, quantity: number, productId: number){
     for(let i = 0; i < this.shoppingListProducts.length; i ++) {
       if (this.shoppingListProducts[i].id == productId) {
         this.shoppingListProduct = this.shoppingListProducts[i]
       }
     }
 
-    this.shoppingListService.updateShoppingListProduct(quantity, this.shoppingListProduct);
+    this.shoppingListService.updateShoppingListProduct(userName, quantity, this.shoppingListProduct).subscribe(
+      succes => {
+        this._snackBar.open("Successfully updated product.", 'OK', {
+            duration: 5000,
+            panelClass: ['errorSnackbar']
+          }
+        );
+      },
+      error => {
+        this._snackBar.open("An error occurred while loading the page: " + error.statusText, 'OK', {
+            duration: 5000,
+            panelClass: ['errorSnackbar']
+          }
+        );
+      }
+    );
   }
 
-  deleteShoppingListProduct(productId: number) {
-    this.shoppingListService.deleteShoppingListProduct(productId);
+  async deleteShoppingListProduct(userName: string ,productId: number) {
+    await this.shoppingListService.deleteShoppingListProduct(userName, productId).subscribe(
+      succes => {
+        this._snackBar.open("Successfully removed product from shopping list.", 'OK', {
+            duration: 5000,
+            panelClass: ['errorSnackbar']
+          }
+        );
+      },
+      error => {
+        this._snackBar.open("An error occurred while removing product: " + error.statusText, 'OK', {
+            duration: 5000,
+            panelClass: ['errorSnackbar']
+          }
+        );
+      }
+    );
   }
 
   onUpdate() {
     for (let i = 0; i < this.formGroups.value.forms.length; i++) {
       if (this.shoppingListProducts[i].quantity != this.formGroups.value.forms[i].quantity) {
-        console.log(this.shoppingListProducts[i].quantity + " " + this.formGroups.value.forms[i].quantity)
         this.shoppingListProducts[i].quantity = this.formGroups.value.forms[i].quantity;
-        this.shoppingListProducts[i] = this.shoppingListService.updateShoppingListProduct(this.formGroups.value.forms[i].productId, this.shoppingListProducts[i]);
+        this.shoppingListService.updateShoppingListProduct(this.user?.name, this.formGroups.value.forms[i].productId, this.shoppingListProducts[i]).subscribe(
+          shoppingListProduct => {
+            this.shoppingListProducts[i] = shoppingListProduct;
+            this._snackBar.open("Successfully updated the product.", 'OK', {
+                duration: 5000,
+                panelClass: ['errorSnackbar']
+              }
+            );
+          },
+          error => {
+            this._snackBar.open("An error occurred while updating the product: " + error.statusText, 'OK', {
+                duration: 5000,
+                panelClass: ['errorSnackbar']
+              }
+            );
+          }
+        );
       }
     }
   }
@@ -108,14 +170,12 @@ export class ShoppinglistComponent implements OnInit {
   async ngOnInit(){
     this.loggedIn = await this.keycloakService.isLoggedIn();
 
-    console.log("is user logged in: " + this.loggedIn);
     if (this.loggedIn) {
-      this.userService.getUser(this.keycloakService.getUsername())?.subscribe(res => {
+      await this.userService.getUser(this.keycloakService.getUsername())?.subscribe(res => {
         this.user = <User>res;
 
-        console.log("user is: " + this.user.name + " id: " +this.user.id);
         if (this.user){
-          this.getShoppingList(this.user.id)
+          this.getShoppingList(this.user.name)
         }
       })
     }
