@@ -18,7 +18,6 @@ export class ShoppingListService {
       API_HEADERS.headers = API_HEADERS.headers.set('Authorization', 'Bearer ' + await this.keycloakService.getToken());
       return "Success";
     }
-    return "Logged out";
   }
 
   getShoppingList(userName: string):Observable<ShoppingListProduct[]> {
