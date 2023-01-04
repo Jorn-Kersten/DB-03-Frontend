@@ -23,14 +23,9 @@ describe('UserComponent', () => {
       ],
       declarations: [
         AppComponent,
-        IndexComponent,
-        NavbarComponent,
-        ShoppinglistComponent
+        UserComponent
       ],
       providers: [
-        IndexComponent,
-        NavbarComponent,
-        ShoppinglistComponent
       ]
     })
     .compileComponents();
@@ -38,8 +33,9 @@ describe('UserComponent', () => {
 
   it('should create the app', () => {
     const fixture = TestBed.createComponent(UserComponent);
+
     const app = fixture.componentInstance;
+
     expect(app).toBeTruthy();
-    console.log("Should render the app (user component)");
   });
 });

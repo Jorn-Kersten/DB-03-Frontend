@@ -29,16 +29,10 @@ export class UserService {
 
 
   async addToDatabase(name: string | undefined, email: string | undefined) {
-    console.log(API_HEADERS.headers)
     if (name && email) {
       const url = '/api/user/register/';
       return this.http.post<any>(url, {headers: API_HEADERS.headers, name: name, email: email}).subscribe(data => console.log("added"))
     }
     return;
   }
-
-  // getShoppingListProductById(productId: number):Observable<ShoppingListProduct> {
-  //   const url = 'http://localhost:8080/api/shoppingList/products/'+ productId +'';
-  //   return this.http.get<ShoppingListProduct>(url);
-  // }
 }

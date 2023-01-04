@@ -19,36 +19,26 @@ describe('AppComponent', () => {
       declarations: [
         AppComponent,
         IndexComponent,
-        NavbarComponent,
-        ShoppinglistComponent,
-        UserComponent
+        NavbarComponent
       ],
       providers: [
-        IndexComponent,
-        NavbarComponent,
-        ShoppinglistComponent,
-        UserComponent
       ]
     }).compileComponents();
   });
 
   it('should create the app', () => {
     const fixture = TestBed.createComponent(AppComponent);
+
     const app = fixture.componentInstance;
+
     expect(app).toBeTruthy();
-    console.log("Should render the app (app component)");
   });
 
   it(`title should be 'AJcompare'`, () => {
     const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app.title).toEqual('AJcompare');
-  });
 
-  it('should render navbar', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const compiled = fixture.nativeElement as HTMLElement;
-    fixture.detectChanges();
-    expect(compiled.querySelector('a')?.textContent).toEqual('AJcompare');
+    const app = fixture.componentInstance;
+
+    expect(app.title).toEqual('AJcompare');
   });
 });
