@@ -9,9 +9,10 @@ module.exports = function (config) {
       require('karma-jasmine'),
       require('karma-chrome-launcher'),
       require('karma-jasmine-html-reporter'),
+      require('karma-coverage-istanbul-reporter'),
       require('karma-coverage'),
-      require('karma-sonarqube-reporter'),
-      require('@angular-devkit/build-angular/plugins/karma')
+      require('@angular-devkit/build-angular/plugins/karma'),
+      require('karma-sonarqube-reporter')
     ],
     client: {
       jasmine: {
@@ -32,6 +33,11 @@ module.exports = function (config) {
         { type: 'html' },
         { type: 'text-summary' }
       ]
+    },
+    coverageIstanbulReporter: {
+      dir: require('path').join(__dirname, './coverage/lcov-report'),
+      reports: ['lcovonly'],
+      fixWebpackSourcePaths: true
     },
     sonarqubeReporter: {
       basePath: 'src/app', // test files folder
