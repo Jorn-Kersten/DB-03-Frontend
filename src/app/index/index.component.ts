@@ -175,6 +175,7 @@ export class IndexComponent implements OnInit {
                             this.shoppingLists = shoppingLists;
                             this.shoppingList = this.shoppingLists[this.shoppingLists.length-1];
                             this.shoppingListProduct = this.shoppingListProduct || {};
+                            console.log(shoppingLists)
                             this.shoppingListProduct.shoppingListId = this.shoppingList.id;
                             this.shoppingListProduct.userName = this.user?.name;
                             this.shoppingListProduct.quantity = this.formGroups.value.forms[i].quantity;
