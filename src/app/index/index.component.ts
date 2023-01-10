@@ -125,95 +125,93 @@ export class IndexComponent implements OnInit {
         this.user = <User>res;
         this.shoppinglistService.getShoppingList(this.user.name).subscribe(
           async shoppingListProducts => {
-            if (shoppingListProducts) {
+            if (shoppingListProducts.length != 0) {
               this.tempShoppingListProduct = shoppingListProducts;
               if (this.tempShoppingListProduct) {
                 for (let i = 0; i < this.formGroups.value.forms.length; i++) {
                   var startOfWeek = moment().startOf('isoWeek').toDate();
                   var endOfWeek = moment().endOf('isoWeek').toDate();
-                  if (this.tempShoppingListProduct) {
-                    if (this.formGroups.value.forms[i].productId == id) {
-                      if (this.tempShoppingListProduct[this.tempShoppingListProduct.length-1].date >= startOfWeek && this.tempShoppingListProduct[this.tempShoppingListProduct.length-1].date <= endOfWeek) {
-                        this.shoppingListProduct = this.shoppingListProduct || {};
-                        this.shoppingListProduct.shoppingListId = this.tempShoppingListProduct[this.tempShoppingListProduct.length-1].id;
-                        this.shoppingListProduct.userName = this.user?.name;
-                        this.shoppingListProduct.quantity = this.formGroups.value.forms[i].quantity;
-                        this.shoppingListProduct.content = this.products[id-1].content;
-                        this.shoppingListProduct.name = this.products[id-1].name;
-                        this.shoppingListProduct.superMarket = this.products[id-1].supermarket;
-                        this.shoppingListProduct.url = this.products[id-1].url;
-                        this.shoppingListProduct.date = this.products[id-1].date;
-                        this.shoppingListProduct.price = this.products[id-1].price;
+                  if (this.formGroups.value.forms[i].productId == id) {
+                    if (this.tempShoppingListProduct[this.tempShoppingListProduct.length-1].date >= startOfWeek && this.tempShoppingListProduct[this.tempShoppingListProduct.length-1].date <= endOfWeek) {
+                      this.shoppingListProduct = this.shoppingListProduct || {};
+                      this.shoppingListProduct.shoppingListId = this.tempShoppingListProduct[this.tempShoppingListProduct.length-1].id;
+                      this.shoppingListProduct.userName = this.user?.name;
+                      this.shoppingListProduct.quantity = this.formGroups.value.forms[i].quantity;
+                      this.shoppingListProduct.content = this.products[id-1].content;
+                      this.shoppingListProduct.name = this.products[id-1].name;
+                      this.shoppingListProduct.superMarket = this.products[id-1].supermarket;
+                      this.shoppingListProduct.url = this.products[id-1].url;
+                      this.shoppingListProduct.date = this.products[id-1].date;
+                      this.shoppingListProduct.price = this.products[id-1].price;
 
-                        (await this.shoppinglistService.addShoppingListProduct(this.user.name, this.shoppingListProduct)).subscribe(
-                          succes => {
-                            console.log("added to shoppinglist")
-                            this._snackBar.open("Successfully added product to shopping list.", 'OK', {
-                                duration: 5000,
-                                panelClass: ['errorSnackbar']
-                              }
-                            );
-                          },
-                          error => {
-                            this._snackBar.open("Could not add to shopping list: " + error.statusText, 'OK', {
-                                duration: 5000,
-                                panelClass: ['errorSnackbar']
-                              }
-                            );
-                          }
-                        )
-                      } else {
-                        this.shoppingList = this.shoppingList || {};
-                        this.shoppingList.name = "Shopping List " + Date.now().toString();
-                        this.shoppingList.supermarket = "";
-                        this.shoppingList.date = Date.now();
-                        this.shoppingList.totalPrice = 0.0;
-                        this.shoppinglistService.addShoppingList(this.user.name, this.shoppingList);
+                      (await this.shoppinglistService.addShoppingListProduct(this.user.name, this.shoppingListProduct)).subscribe(
+                        succes => {
+                          console.log("added to shoppinglist")
+                          this._snackBar.open("Successfully added product to shopping list.", 'OK', {
+                              duration: 5000,
+                              panelClass: ['errorSnackbar']
+                            }
+                          );
+                        },
+                        error => {
+                          this._snackBar.open("Could not add to shopping list: " + error.statusText, 'OK', {
+                              duration: 5000,
+                              panelClass: ['errorSnackbar']
+                            }
+                          );
+                        }
+                      )
+                    } else {
+                      this.shoppingList = this.shoppingList || {};
+                      this.shoppingList.name = "Shopping List " + Date.now().toString();
+                      this.shoppingList.supermarket = "";
+                      this.shoppingList.date = Date.now();
+                      this.shoppingList.totalPrice = 0.0;
+                      this.shoppinglistService.addShoppingList(this.user.name, this.shoppingList);
 
-                        this.shoppinglistService.getAllShoppingList(this.user.name).subscribe(
-                          shoppingLists => {
-                            this.shoppingLists = shoppingLists;
-                            this.shoppingList = this.shoppingLists[this.shoppingLists.length-1];
-                            this.shoppingListProduct = this.shoppingListProduct || {};
-                            console.log(shoppingLists)
-                            this.shoppingListProduct.shoppingListId = this.shoppingList.id;
-                            this.shoppingListProduct.userName = this.user?.name;
-                            this.shoppingListProduct.quantity = this.formGroups.value.forms[i].quantity;
-                            this.shoppingListProduct.content = this.products[id-1].content;
-                            this.shoppingListProduct.name = this.products[id-1].name;
-                            this.shoppingListProduct.superMarket = this.products[id-1].supermarket;
-                            this.shoppingListProduct.url = this.products[id-1].url;
-                            this.shoppingListProduct.date = this.products[id-1].date;
-                            this.shoppingListProduct.price = this.products[id-1].price;
+                      this.shoppinglistService.getAllShoppingList(this.user.name).subscribe(
+                        shoppingLists => {
+                          this.shoppingLists = shoppingLists;
+                          this.shoppingList = this.shoppingLists[this.shoppingLists.length-1];
+                          this.shoppingListProduct = this.shoppingListProduct || {};
+                          console.log(shoppingLists)
+                          this.shoppingListProduct.shoppingListId = this.shoppingList.id;
+                          this.shoppingListProduct.userName = this.user?.name;
+                          this.shoppingListProduct.quantity = this.formGroups.value.forms[i].quantity;
+                          this.shoppingListProduct.content = this.products[id-1].content;
+                          this.shoppingListProduct.name = this.products[id-1].name;
+                          this.shoppingListProduct.superMarket = this.products[id-1].supermarket;
+                          this.shoppingListProduct.url = this.products[id-1].url;
+                          this.shoppingListProduct.date = this.products[id-1].date;
+                          this.shoppingListProduct.price = this.products[id-1].price;
 
-                            this.shoppinglistService.addShoppingListProduct(this.user.name, this.shoppingListProduct).subscribe(
-                              succes => {
-                                console.log("Created shoppingList and added to database")
-                                this._snackBar.open("Successfully added product to shopping list.", 'OK', {
-                                    duration: 5000,
-                                    panelClass: ['errorSnackbar']
-                                  }
-                                );
-                              },
-                              error => {
-                                this._snackBar.open("Could not add to shopping list: " + error.statusText, 'OK', {
-                                    duration: 5000,
-                                    panelClass: ['errorSnackbar']
-                                  }
-                                );
-                              }
-                            )
+                          this.shoppinglistService.addShoppingListProduct(this.user.name, this.shoppingListProduct).subscribe(
+                            succes => {
+                              console.log("Created shoppingList and added to database")
+                              this._snackBar.open("Successfully added product to shopping list.", 'OK', {
+                                  duration: 5000,
+                                  panelClass: ['errorSnackbar']
+                                }
+                              );
+                            },
+                            error => {
+                              this._snackBar.open("Could not add to shopping list: " + error.statusText, 'OK', {
+                                  duration: 5000,
+                                  panelClass: ['errorSnackbar']
+                                }
+                              );
+                            }
+                          )
 
-                          },
-                          error => {
-                            this._snackBar.open("An error occurred when trying to retrieve data: " + error.statusText, 'OK', {
-                                duration: 5000,
-                                panelClass: ['errorSnackbar']
-                              }
-                            );
-                          }
-                        )
-                      }
+                        },
+                        error => {
+                          this._snackBar.open("An error occurred when trying to retrieve data: " + error.statusText, 'OK', {
+                              duration: 5000,
+                              panelClass: ['errorSnackbar']
+                            }
+                          );
+                        }
+                      )
                     }
                   }
                 }
@@ -223,9 +221,10 @@ export class IndexComponent implements OnInit {
               for (let i = 0; i < this.formGroups.value.forms.length; i++) {
                 if (this.tempShoppingListProduct) {
                   if (this.formGroups.value.forms[i].productId == id) {
-                    this.shoppingList.name = "Shopping List " + new Date("dd-mm-YYYY") + "";
+                    this.shoppingList = this.shoppingList || {};
+                    this.shoppingList.name = "Shopping List " + Date.now().toString();
                     this.shoppingList.supermarket = "";
-                    this.shoppingList.date = new Date("dd-mm-YYYY");
+                    this.shoppingList.date =  + Date.now().toString();
                     this.shoppingList.totalPrice = 0.0;
                     this.shoppinglistService.addShoppingList(this.user.name, this.shoppingList);
 

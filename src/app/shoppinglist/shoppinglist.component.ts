@@ -175,7 +175,11 @@ export class ShoppinglistComponent implements OnInit {
         this.user = <User>res;
 
         if (this.user){
-          this.getShoppingList(this.user.name)
+          this.getShoppingList(this.user.name);
+
+          this.shoppingListService.Refreshrequired.subscribe(response => {
+            this.getShoppingList(this.user?.name);
+          })
         }
       })
     }

@@ -1,6 +1,6 @@
 import {Injectable} from "@angular/core";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {Observable} from "rxjs";
+import {Observable, Subject, tap} from "rxjs";
 import {ShoppingListProduct} from "./ShoppingListProduct";
 import {KeycloakService} from "keycloak-angular";
 import {API_HEADERS} from "../url.constants";
@@ -21,6 +21,12 @@ export class ShoppingListService {
     return "Logged out";
   }
 
+  private _refreshrequired = new Subject<void>()
+
+  get Refreshrequired() {
+    return this._refreshrequired;
+  }
+
   getShoppingList(userName: string):Observable<ShoppingListProduct[]> {
     const url = '/api/user/shoppingList/products/'+userName+'';
     return this.http.get<ShoppingListProduct[]>(url, API_HEADERS);
@@ -33,7 +39,11 @@ export class ShoppingListService {
 
   updateShoppingListProduct(userName: string | undefined, productId: number, shoppingListProduct: ShoppingListProduct):Observable<ShoppingListProduct> {
     const url = '/api/user/shoppingList/products/'+ userName +'/'+ productId +'';
-    return this.http.put<ShoppingListProduct>(url, shoppingListProduct, API_HEADERS);
+    return this.http.put<ShoppingListProduct>(url, shoppingListProduct, API_HEADERS).pipe(
+      tap(()=>{
+        this._refreshrequired.next();
+      })
+    );
   }
 
   addShoppingListProduct(userName: string | undefined, shoppingListProduct: ShoppingListProduct): Observable<ShoppingListProduct> {
@@ -43,7 +53,11 @@ export class ShoppingListService {
 
   deleteShoppingListProduct(userName: string, shoppingListProductId: number):Observable<any>{
     const url = '/api/user/shoppingList/products/'+ userName +'/'+ shoppingListProductId +'';
-    return this.http.delete(url)
+    return this.http.delete(url).pipe(
+      tap(()=>{
+        this._refreshrequired.next();
+      })
+    );
   }
 
   getAllShoppingList(userName: string):Observable<ShoppingList[]> {
