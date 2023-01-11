@@ -146,7 +146,6 @@ export class IndexComponent implements OnInit {
 
                       (await this.shoppinglistService.addShoppingListProduct(this.user.name, this.shoppingListProduct)).subscribe(
                         succes => {
-                          console.log("added to shoppinglist")
                           this._snackBar.open("Successfully added product to shopping list.", 'OK', {
                               duration: 5000,
                               panelClass: ['errorSnackbar']
@@ -174,7 +173,6 @@ export class IndexComponent implements OnInit {
                           this.shoppingLists = shoppingLists;
                           this.shoppingList = this.shoppingLists[this.shoppingLists.length-1];
                           this.shoppingListProduct = this.shoppingListProduct || {};
-                          console.log(shoppingLists)
                           this.shoppingListProduct.shoppingListId = this.shoppingList.id;
                           this.shoppingListProduct.userName = this.user?.name;
                           this.shoppingListProduct.quantity = this.formGroups.value.forms[i].quantity;
@@ -187,7 +185,6 @@ export class IndexComponent implements OnInit {
 
                           this.shoppinglistService.addShoppingListProduct(this.user.name, this.shoppingListProduct).subscribe(
                             succes => {
-                              console.log("Created shoppingList and added to database")
                               this._snackBar.open("Successfully added product to shopping list.", 'OK', {
                                   duration: 5000,
                                   panelClass: ['errorSnackbar']
@@ -245,7 +242,6 @@ export class IndexComponent implements OnInit {
 
                         this.shoppinglistService.addShoppingListProduct(this.user.name, this.shoppingListProduct).subscribe(
                           succes => {
-                            console.log("added to shoppinglist")
                             this._snackBar.open("Successfully added product to shopping list.", 'OK', {
                                 duration: 5000,
                                 panelClass: ['errorSnackbar']
