@@ -72,7 +72,7 @@ export class IndexComponent implements OnInit {
         this.checkUsername = <User>res;
 
         if (profile.username == this.checkUsername?.name) {
-          console.log('already in database');
+          console.log('already in database ');
         } else {
           this.userService.addToDatabase(profile.username, profile.email);
         }
